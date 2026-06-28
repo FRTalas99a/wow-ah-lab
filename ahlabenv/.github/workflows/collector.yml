@@ -1,0 +1,36 @@
+name: WoW AH Collector
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # cada 6 horas
+  workflow_dispatch:  # permite ejecutarlo manualmente también
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Instalar dependencias
+        run: pip install requests mysql-connector-python
+
+      - name: Crear secrets.py desde GitHub Secrets
+        run: |
+          mkdir -p ahlabenv/config
+          cat << EOF > ahlabenv/config/secrets.py
+          CLIENT_ID = "${{ secrets.CLIENT_ID }}"
+          CLIENT_SECRET = "${{ secrets.CLIENT_SECRET }}"
+          DB_HOST = "${{ secrets.DB_HOST }}"
+          DB_USER = "${{ secrets.DB_USER }}"
+          DB_PASSWORD = "${{ secrets.DB_PASSWORD }}"
+          DB_NAME = "${{ secrets.DB_NAME }}"
+          EOF
+
+      - name: Correr el collector
+        run: python ahlabenv/collectors/ah_collector.py

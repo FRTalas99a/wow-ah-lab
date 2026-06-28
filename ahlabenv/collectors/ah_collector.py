@@ -88,14 +88,15 @@ def run_collection():
     try:
         conn = mysql.connector.connect(
             host=DB_HOST, user=DB_USER,
-            password=DB_PASSWORD, database=DB_NAME
-        )
+            password=DB_PASSWORD, database=DB_NAME,
+            port=12289,
+            ssl_disabled=False
+            )
         cursor = conn.cursor(dictionary=True)
         print("✅ Conectado a MySQL")
     except Exception as e:
         print(f"❌ Error conectando a MySQL: {e}")
         return
-
     # 2. Token de Blizzard
     try:
         token = get_access_token()
