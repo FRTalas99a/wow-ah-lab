@@ -91,9 +91,13 @@ def run_collection():
             password=DB_PASSWORD, database=DB_NAME,
             port=12289,
             ssl_disabled=False
-            )
+        )
         cursor = conn.cursor(dictionary=True)
         print("✅ Conectado a MySQL")
+        # Keepalive: mantiene Aiven activo aunque el cron se atrase
+        cursor.execute("SELECT 1")
+        cursor.fetchone()  # ← leemos el resultado para liberar el cursor
+        print("✅ Keepalive enviado")
     except Exception as e:
         print(f"❌ Error conectando a MySQL: {e}")
         return

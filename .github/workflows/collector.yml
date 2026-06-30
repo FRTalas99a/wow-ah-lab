@@ -2,8 +2,9 @@ name: WoW AH Collector
 
 on:
   schedule:
-    - cron: '0 */6 * * *'  # cada 6 horas
-  workflow_dispatch:  # permite ejecutarlo manualmente también
+    - cron: '0 */6 * * *'   # cada 6 horas: 00, 06, 12, 18 UTC
+    - cron: '30 */6 * * *'  # desfasado 30 min, como respaldo
+  workflow_dispatch:
 
 jobs:
   collect:
